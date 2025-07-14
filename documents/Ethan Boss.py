@@ -52,10 +52,10 @@ class Fighter:
 
 # Player and boss setup
 player_moves = {
-    "Hack Pulse": {"damage_range": (10, 20), "effect": "Ethan's visor flickers!"},
+    "Parkour": {"damage_range": (10, 20), "effect": "Ethan Shakes in Fear!"},
     "Rule Jammer": {"damage_range": (6, 16), "effect": "A rule is scrambled."},
-    "Debug Strike": {"damage_range": (8, 18)},
-    "Overclock": {"damage_range": (12, 30), "effect": "Massive system strain!"}
+    "Grass Touch": {"damage_range": (8, 18)},
+    "Be Late!": {"damage_range": (12, 30), "effect": "Ethan Forgets where camper is!"}
 }
 
 boss_moves = {
