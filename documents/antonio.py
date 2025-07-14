@@ -7,16 +7,21 @@ class Camper:
         self.screen = screen
         self.x = x
         self.y = y
-        self.speed = 5
         self.frames = []
         self.frames_index = 0
+        self.last_frame_time = 0
         for file in pixil_frames_filenames:
             load = pygame.image.load(file)
             load = pygame.transform.scale(load, (67,67))
             self.frames.append(load)
     def move(self):
-        self.x = self.x + self.speed
-        self.y = self.y + self.speed
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[pygame.K_LEFT]:
+            self.frames_index = 1
+            # if time.time() % 2 < 0.5:
+                # self.frames_index = 2
+                # self.last_frame_time = time.time()
+
     def draw(self):
         current_image = self.frames[self.frames_index]
         self.screen.blit(current_image, (self.x, self.y))
@@ -24,15 +29,23 @@ class Camper:
 def test_character():
         # TODO: change this function to test your class
         screen = pygame.display.set_mode((640, 480))
-        character = Camper(screen, 400, 400, ["pixil-frame-0"".png"])
+        character = Camper(screen, 200, 200, ["pixil-frame-0.png", "pixil-frame-1.png"])
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-
             screen.fill("white")
             character.draw()
+            character.move()
             pygame.display.update()
+        if pressed_keys[pygame.K_LEFT]:
+            character.x = character.x - 5
+        if pressed_keys[pygame.K_RIGHT]:
+            character.x = character.x + 5
+        if pressed_keys[pygame.K_UP]:
+            character.y = character.y - 5
+        if pressed_keys[pygame.K_DOWN]:
+            character.Y = character.y + 5
 
     # Testing the classes
     # click the green arrow to the left or run "Current File" in PyCharm to test this class
