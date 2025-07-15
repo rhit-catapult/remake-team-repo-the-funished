@@ -13,37 +13,47 @@ class Camper:
             load = pygame.image.load(file)
             load = pygame.transform.scale(load, (67,67))
             self.frames.append(load)
-    def move(self):
-        pressed_keys = pygame.key.get_pressed()
-        if pressed_keys[pygame.K_LEFT]:
-            self.frames_index = 1
-            time.sleep(4)
-            self.frames_index = 2
+        self.move_time = time.time()
+        self.draw_time = time.time()
+    def move(self, x, y, current_time):
+        self.x = self.x + x
+        self.y = self.y + y
+        if current_time - self.draw_time > 0.1:
+            self.frames_index = self.frames_index + 1
+            self.draw_time = current_time
+            if self.frames_index >= len(self.frames):
+                self.frames_index = 1
+        self.move_time = current_time
 
     def draw(self):
         current_image = self.frames[self.frames_index]
+        if time.time() - self.move_time > 0.1:
+            current_image = self.frames[0]
         self.screen.blit(current_image, (self.x, self.y))
 
 def test_character():
         # TODO: change this function to test your class
+        pygame.init()
         screen = pygame.display.set_mode((640, 480))
+        clock = pygame.time.Clock()
         character = Camper(screen, 200, 200, ["pixil-frame-0.png", "pixil-frame-1.png", "pixil-frame-2.png"])
         while True:
+            clock.tick(60)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
             screen.fill("white")
+            pressed_keys = pygame.key.get_pressed()
+            if pressed_keys[pygame.K_LEFT]:
+                character.move(-5,0,time.time())
+            if pressed_keys[pygame.K_RIGHT]:
+                character.move(5,0,time.time())
+            if pressed_keys[pygame.K_UP]:
+                character.move(0,-5,time.time())
+            if pressed_keys[pygame.K_DOWN]:
+                character.move(0,5,time.time())
             character.draw()
-            character.move()
             pygame.display.update()
-        if pressed_keys[pygame.K_LEFT]:
-            character.x = character.x - 5
-        if pressed_keys[pygame.K_RIGHT]:
-            character.x = character.x + 5
-        if pressed_keys[pygame.K_UP]:
-            character.y = character.y - 5
-        if pressed_keys[pygame.K_DOWN]:
-            character.Y = character.y + 5
 
     # Testing the classes
     # click the green arrow to the left or run "Current File" in PyCharm to test this class
