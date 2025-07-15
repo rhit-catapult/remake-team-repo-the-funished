@@ -9,7 +9,6 @@ class Camper:
         self.y = y
         self.frames = []
         self.frames_index = 0
-        self.last_frame_time = 0
         for file in pixil_frames_filenames:
             load = pygame.image.load(file)
             load = pygame.transform.scale(load, (67,67))
@@ -18,9 +17,8 @@ class Camper:
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[pygame.K_LEFT]:
             self.frames_index = 1
-            # if time.time() % 2 < 0.5:
-                # self.frames_index = 2
-                # self.last_frame_time = time.time()
+            time.sleep(4)
+            self.frames_index = 2
 
     def draw(self):
         current_image = self.frames[self.frames_index]
@@ -29,7 +27,7 @@ class Camper:
 def test_character():
         # TODO: change this function to test your class
         screen = pygame.display.set_mode((640, 480))
-        character = Camper(screen, 200, 200, ["pixil-frame-0.png", "pixil-frame-1.png"])
+        character = Camper(screen, 200, 200, ["pixil-frame-0.png", "pixil-frame-1.png", "pixil-frame-2.png"])
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
