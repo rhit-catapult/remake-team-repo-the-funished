@@ -36,7 +36,7 @@ def test_character():
         pygame.init()
         screen = pygame.display.set_mode((640, 480))
         clock = pygame.time.Clock()
-        character = Camper(screen, 200, 200, ["pixil-frame-0.png", "pixil-frame-1.png", "pixil-frame-2.png"])
+        character = Camper(screen, 200, 200, ["pixil-frame-0.png", "pixil-frame-1.png", "pixil-frame-2.png", "pixil-frame-3.png", "pixil-frame-4.png", "pixil-frame-5.png"])
         while True:
             clock.tick(60)
             for event in pygame.event.get():
@@ -45,13 +45,13 @@ def test_character():
             screen.fill("white")
             pressed_keys = pygame.key.get_pressed()
             if pressed_keys[pygame.K_LEFT]:
-                character.move(-5,0,time.time())
+                character.move(-1,0,time.time())
             if pressed_keys[pygame.K_RIGHT]:
-                character.move(5,0,time.time())
+                character.move(1,0,time.time())
             if pressed_keys[pygame.K_UP]:
-                character.move(0,-5,time.time())
+                character.move(0,-1,time.time())
             if pressed_keys[pygame.K_DOWN]:
-                character.move(0,5,time.time())
+                character.move(0,1,time.time())
             character.draw()
             pygame.display.update()
 
