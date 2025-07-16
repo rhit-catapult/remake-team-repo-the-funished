@@ -2,47 +2,60 @@ import pygame
 import random
 import sys
 
-pygame.init()
+def main_boss ():
+    pygame.init()
+    # Load sounds
+    sounds = {
+        "Parkour": pygame.mixer.Sound("jump.wav"),
+        "Rule Jammer": pygame.mixer.Sound("Static.mp3"),
+        "Grasshole": pygame.mixer.Sound("Grass.mp3"),
+        "Be Late!": pygame.mixer.Sound("Bell.mp3"),
+        "Rule Enforce Beam": pygame.mixer.Sound("laserShoot.wav"),
+        "Counselor Command": pygame.mixer.Sound("Yelling.mp3"),
+        "Funishment Wave": pygame.mixer.Sound("Funishment.mp3")
+    }
 
-# Load sounds
-sounds = {
-    "Parkour": pygame.mixer.Sound("jump.wav"),
-    "Rule Jammer": pygame.mixer.Sound("Static.mp3"),
-    "Grasshole": pygame.mixer.Sound("Grass.mp3"),
-    "Be Late!": pygame.mixer.Sound("Bell.mp3"),
-    "Rule Enforce Beam": pygame.mixer.Sound("laserShoot.wav"),
-    "Counselor Command": pygame.mixer.Sound("Yelling.mp3"),
-    "Funishment Wave": pygame.mixer.Sound("Funishment.mp3")
-}
+    WIDTH, HEIGHT = 800, 600
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Boss Battle – Ethan")
 
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Boss Battle – Ethan")
+    # Fonts
+    FONT = pygame.font.SysFont("arial", 24)
+    BIG_FONT = pygame.font.SysFont("arial", 30)
 
-# Fonts
-FONT = pygame.font.SysFont("arial", 24)
-BIG_FONT = pygame.font.SysFont("arial", 30)
+    # Colors
+    WHITE = (255, 255, 255)
+    RED = (220, 40, 40)
+    GREEN = (40, 200, 80)
+    YELLOW = (230, 200, 20)
+    BLACK = (0, 0, 0)
+    GREY = (50, 50, 50)
+    SEMI_TRANSPARENT = (0, 0, 0, 150)
 
-# Colors
-WHITE = (255, 255, 255)
-RED = (220, 40, 40)
-GREEN = (40, 200, 80)
-YELLOW = (230, 200, 20)
-BLACK = (0, 0, 0)
-GREY = (50, 50, 50)
-SEMI_TRANSPARENT = (0, 0, 0, 150)
-
-# Load images and scale
-ethan_img = pygame.image.load("ethan2.png.png")
-ethan_img = pygame.transform.scale(ethan_img, (190, 250))
-player_img = pygame.image.load("pixil-frame-0.png")
-player_img = pygame.transform.scale(player_img, (190, 250))
-background_img = pygame.image.load("Background.Ethan.png")
-background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
+    # Load images and scale
+    ethan_img = pygame.image.load("ethan2.png.png")
+    ethan_img = pygame.transform.scale(ethan_img, (190, 250))
+    player_img = pygame.image.load("pixil-frame-0.png")
+    player_img = pygame.transform.scale(player_img, (190, 250))
+    background_img = pygame.image.load("Background.Ethan.png")
+    background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
+    player_moves = {
+        "Parkour": {"damage_range": (10, 20), "effect": "Ethan shakes in fear!"},
+        "Rule Jammer": {"damage_range": (6, 16), "effect": "A rule is scrambled."},
+        "Grasshole": {"damage_range": (8, 18)},
+        "Be Late!": {"damage_range": (12, 30), "effect": "Ethan forgets where you're at!"}
+    }
+    boss_moves = {
+        "Rule Enforce Beam": {"damage_range": (10, 20), "effect": "Red alert flashes!"},
+        "Counselor Command": {"damage_range": (6, 12)},
+        "Funishment Wave": {"damage_range": (8, 15), "effect": "You feel trapped."}
+    }
+    player = Fighter("Camper", 100, player_moves, 70, 350, player_img)
+    ethan = Fighter("Ethan", 120, boss_moves, 520, 330, ethan_img)
 
 # Fighter class
 class Fighter:
-    def __init__(self, name, health, moves, x, y, img):
+    def __init__(self, name, health, moves, x, y, img, screen):
         self.name = name
         self.health = health
         self.max_health = health
@@ -69,25 +82,11 @@ class Fighter:
         surface.blit(self.img, (self.x + offset_x, self.y))
 
 # Player and boss setup
-player_moves = {
-    "Parkour": {"damage_range": (10, 20), "effect": "Ethan shakes in fear!"},
-    "Rule Jammer": {"damage_range": (6, 16), "effect": "A rule is scrambled."},
-    "Grasshole": {"damage_range": (8, 18)},
-    "Be Late!": {"damage_range": (12, 30), "effect": "Ethan forgets where you're at!"}
-}
 
-boss_moves = {
-    "Rule Enforce Beam": {"damage_range": (10, 20), "effect": "Red alert flashes!"},
-    "Counselor Command": {"damage_range": (6, 12)},
-    "Funishment Wave": {"damage_range": (8, 15), "effect": "You feel trapped."}
-}
-
-player = Fighter("Camper", 100, player_moves, 70, 350, player_img)
-ethan = Fighter("Ethan", 120, boss_moves, 520, 330, ethan_img)
 
 # Utility functions
 
-def draw_text(surface, text, x, y, color=WHITE, font=FONT):
+def draw_text(surface, text, x, y, font, color=(255,255,255)):
     surf = font.render(text, True, color)
     surface.blit(surf, (x, y))
 
@@ -97,7 +96,7 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
     """
     pygame.draw.rect(surface, color, rect, border_radius=corner_radius)
 
-def draw_health_bar(fighter, x, y, width=200, height=20):
+def draw_health_bar(screen, font, fighter, x, y, width=200, height=20):
     # Animate health bar smoothly
     speed = 1.5
     if fighter.current_health_display > fighter.health:
@@ -112,30 +111,30 @@ def draw_health_bar(fighter, x, y, width=200, height=20):
     health_ratio = fighter.current_health_display / fighter.max_health
     # Color gradient: green → yellow → red
     if health_ratio > 0.6:
-        bar_color = GREEN
+        bar_color = (0, 204, 0)
     elif health_ratio > 0.3:
-        bar_color = YELLOW
+        bar_color = (255, 255, 0)
     else:
-        bar_color = RED
+        bar_color = (255, 0, 0)
 
     # Draw background and border
-    pygame.draw.rect(screen, BLACK, (x - 2, y - 2, width + 4, height + 4), border_radius=8)
-    pygame.draw.rect(screen, RED, (x, y, width, height), border_radius=8)
+    pygame.draw.rect(screen,(0, 0, 0),(), (x - 2, y - 2, width + 4, height + 4), border_radius=8)
+    pygame.draw.rect(screen, (255, 0, 0), (x, y, width, height), border_radius=8)
     # Draw health
     pygame.draw.rect(screen, bar_color, (x, y, int(width * health_ratio), height), border_radius=8)
 
     # Draw numeric health on bar
     health_text = f"{int(fighter.current_health_display)} / {fighter.max_health}"
-    text_surf = FONT.render(health_text, True, BLACK)
+    text_surf = font.render(health_text, True, pygame.Color("black"))
     text_rect = text_surf.get_rect(center=(x + width // 2, y + height // 2))
     screen.blit(text_surf, text_rect)
 
     # Draw fighter name underneath health bar, centered
-    name_surf = FONT.render(fighter.name, True, WHITE)
+    name_surf = font.render(fighter.name, True, pygame.Color("white"))
     name_rect = name_surf.get_rect(center=(x + width // 2, y + height + 22))
     screen.blit(name_surf, name_rect)
 
-def show_move_options(selected):
+def show_move_options(selected,player_moves,screen):
     moves = list(player_moves.keys())
     box_x = 270
     box_y = 20
@@ -146,25 +145,25 @@ def show_move_options(selected):
     # Semi-transparent background panel with rounded corners
     panel_surf = pygame.Surface((box_width, box_height), pygame.SRCALPHA)
     panel_surf.fill((30, 30, 30, 200))
-    pygame.draw.rect(panel_surf, WHITE, panel_surf.get_rect(), 2, border_radius=12)
+    pygame.draw.rect(panel_surf, (255,255,255), panel_surf.get_rect(),2, border_radius=12)
     screen.blit(panel_surf, (box_x, box_y))
 
-    draw_text(screen, "Choose your move:", box_x + 15, box_y + 12, WHITE, font=BIG_FONT)
+    draw_text(screen, "Choose your move:", font=pygame.font.SysFont("arial", 30),color=(255,255,255), size=box_x + 15, box_y + 12)
 
     for i, move in enumerate(moves):
         option_rect = pygame.Rect(box_x + 15, box_y + 50 + i * 40, box_width - 30, 35)
         if i == selected:
             pygame.draw.rect(screen, (100, 220, 100), option_rect, border_radius=8)
-            pygame.draw.rect(screen, GREEN, option_rect, 2, border_radius=8)
-            color = BLACK
+            pygame.draw.rect(screen, (255,255,255), option_rect, 2, border_radius=8)
+            color = pygame.Color("black")
         else:
             pygame.draw.rect(screen, (50, 50, 50), option_rect, border_radius=8)
-            pygame.draw.rect(screen, WHITE, option_rect, 2, border_radius=8)
-            color = WHITE
+            pygame.draw.rect(screen, (255,255,255), option_rect, 2, border_radius=8)
+            color = pygame.Color("white")
 
         draw_text(screen, f"{i+1}. {move}", option_rect.x + 12, option_rect.y + 6, color)
 
-def draw_message_box(message, fade_alpha=255, inverse_colors=False):
+def draw_message_box(message, fade_alpha=255, inverse_colors=False, WIDTH = 800, HEIGHT = 600):
     box_x = 50
     box_y = HEIGHT - 110
     box_width = WIDTH - 100
@@ -172,17 +171,17 @@ def draw_message_box(message, fade_alpha=255, inverse_colors=False):
     message_surf = pygame.Surface((box_width, box_height), pygame.SRCALPHA)
     bg_color = (255, 255, 255, fade_alpha) if not inverse_colors else (0, 0, 0, fade_alpha)
     border_color = (0, 0, 0, fade_alpha) if not inverse_colors else (255, 255, 255, fade_alpha)
-    text_color = BLACK if not inverse_colors else WHITE
+    text_color = pygame.Color("black") if not inverse_colors else pygame.Color("white")
 
     # Background box
-    pygame.draw.rect(message_surf, bg_color, message_surf.get_rect(), border_radius=12)
+    pygame.draw.rect(message_surf, FONT=pygame.font.SysFont("arial", 24), bg_color, message_surf.get_rect(), border_radius=12)
     pygame.draw.rect(message_surf, border_color, message_surf.get_rect(), 3, border_radius=12)
 
     # Render message text (support multiline if needed)
     lines = message.split('\n')
     y_offset = 15
     for line in lines:
-        text_surf = FONT.render(line, True, text_color)
+        text_surf = font.render(line, True, text_color)
         message_surf.blit(text_surf, (15, y_offset))
         y_offset += 28
 
@@ -342,6 +341,5 @@ while running:
         turn = "player"
 
     redraw_window()
-
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+    main_boss()
