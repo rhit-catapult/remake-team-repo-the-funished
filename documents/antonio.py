@@ -3,19 +3,30 @@ import sys
 import time
 import random
 class Camper:
-    def __init__(self, screen, x, y, pixil_frames_filenames):
+    def __init__(self, screen, x, y, left_frames_filenames, right_frames_filenames):
         self.screen = screen
         self.x = x
         self.y = y
         self.frames = []
+        self.frames_left = []
+        self.frames_right = []
         self.frames_index = 0
-        for file in pixil_frames_filenames:
+        for file in left_frames_filenames:
             load = pygame.image.load(file)
             load = pygame.transform.scale(load, (67,67))
-            self.frames.append(load)
+            self.frames_left.append(load)
+        for file in right_frames_filenames:
+            load = pygame.image.load(file)
+            load = pygame.transform.scale(load, (67,67))
+            self.frames_right.append(load)
+        self.frames = self.frames_right
         self.move_time = time.time()
         self.draw_time = time.time()
     def move(self, x, y, current_time):
+        if x < 0:
+            self.frames = self.frames_left
+        else:
+            self.frames = self.frames_right
         self.x = self.x + x
         self.y = self.y + y
         if current_time - self.draw_time > 0.1:
@@ -36,7 +47,9 @@ def test_character():
         pygame.init()
         screen = pygame.display.set_mode((640, 480))
         clock = pygame.time.Clock()
-        character = Camper(screen, 200, 200, ["pixil-frame-0.png", "pixil-frame-1.png", "pixil-frame-2.png", "pixil-frame-3.png", "pixil-frame-4.png", "pixil-frame-5.png"])
+        character = Camper(screen, 200, 200,
+        ["image-frame-0.png", "image-frame-1.png", "image-frame-2.png", "image-frame-3.png", "image-frame-4.png"],
+        ["pixil-frame-0.png", "pixil-frame-1.png", "pixil-frame-2.png", "pixil-frame-3.png", "pixil-frame-4.png", "pixil-frame-5.png"])
         while True:
             clock.tick(60)
             for event in pygame.event.get():
