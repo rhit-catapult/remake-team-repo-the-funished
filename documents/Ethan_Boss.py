@@ -3,10 +3,10 @@ import random
 
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Ethan Boss Battle")
+pygame.display.set_caption("Eathan Boss Battle")
 
 # Load images
-ethan_img = pygame.transform.scale(pygame.image.load("ethan2.png.png"), (190, 250))
+eathan_img = pygame.transform.scale(pygame.image.load("ethan2.png.png"), (190, 250))
 player_img = pygame.transform.scale(pygame.image.load("pixil-frame-0.png"), (190, 250))
 bg_img = pygame.transform.scale(pygame.image.load("Background.Ethan.png"), (800, 600))
 
@@ -42,17 +42,17 @@ class Fighter:
         return move, dmg, move_data.get("effect", "")
 
 player = Fighter("Camper", 100, {
-    "Parkour": {"damage_range": (10, 20), "effect": "Ethan shakes in fear!"},
+    "Parkour": {"damage_range": (10, 20), "effect": "Eathan shakes in fear!"},
     "Rule Jammer": {"damage_range": (6, 16), "effect": "A rule is scrambled."},
     "Grasshole": {"damage_range": (8, 18)},
-    "Be Late!": {"damage_range": (12, 30), "effect": "Ethan forgets where you're at!"}
+    "Be Late!": {"damage_range": (12, 30), "effect": "Eathan forgets where you're at!"}
 }, 70, 330, player_img)
 
-ethan = Fighter("Ethan", 120, {
+eathan = Fighter("Eathan", 120, {
     "Rule Enforce Beam": {"damage_range": (10, 20), "effect": "Red alert flashes!"},
     "Counselor Command": {"damage_range": (6, 12)},
     "Funishment Wave": {"damage_range": (8, 15), "effect": "You feel trapped."}
-}, 520, 330, ethan_img)
+}, 520, 330, eathan_img)
 
 clock = pygame.time.Clock()
 running = True
@@ -81,7 +81,7 @@ while running:
                 if move_name in sounds:
                     current_sound = sounds[move_name]
                     current_sound.play()
-                move, dmg, effect = player.use_move(move_name, ethan)
+                move, dmg, effect = player.use_move(move_name, eathan)
                 message = f"You used {move}! It dealt {dmg} damage.\n{effect}"
                 turn = "waiting"
                 wait_timer = pygame.time.get_ticks()
@@ -89,28 +89,28 @@ while running:
     if turn == "waiting" and pygame.time.get_ticks() - wait_timer > 2000:
         if current_sound:
             current_sound.stop()
-        move_name = random.choice(list(ethan.moves.keys()))
+        move_name = random.choice(list(eathan.moves.keys()))
         if move_name in sounds:
             current_sound = sounds[move_name]
             current_sound.play()
-        move, dmg, effect = ethan.use_move(move_name, player)
-        message = f"Ethan used {move}! It dealt {dmg} damage.\n{effect}"
+        move, dmg, effect = eathan.use_move(move_name, player)
+        message = f"Eathan used {move}! It dealt {dmg} damage.\n{effect}"
         turn = "player"
 
     if player.health <= 0:
-        message = "You were defeated by Ethan!"
+        message = "You were defeated by Eathan!"
         turn = "end"
-    elif ethan.health <= 0:
-        message = "You defeated Ethan!"
+    elif eathan.health <= 0:
+        message = "You defeated Eathan!"
         turn = "end"
 
     if player.health_bar_display > player.health:
         player.health_bar_display -= 0.8
-    if ethan.health_bar_display > ethan.health:
-        ethan.health_bar_display -= 0.8
+    if eathan.health_bar_display > eathan.health:
+        eathan.health_bar_display -= 0.8
 
     player.draw(screen)
-    ethan.draw(screen)
+    eathan.draw(screen)
 
     # Small health bars, repositioned further apart
     pygame.draw.rect(screen, (0, 0, 0), (30, 20, 200, 18))
@@ -119,16 +119,16 @@ while running:
     screen.blit(pygame.font.SysFont("arial", 18).render(f"{player.name}: {int(player.health_bar_display)}/{player.max_health}", True, (255, 255, 255)), (35, 0))
 
     pygame.draw.rect(screen, (0, 0, 0), (570, 20, 200, 18))
-    pygame.draw.rect(screen, (0, 255, 0) if ethan.health_bar_display > 72 else (255, 255, 0) if ethan.health_bar_display > 36 else (255, 0, 0),
-                     (570, 20, int(200 * (ethan.health_bar_display / ethan.max_health)), 18))
-    screen.blit(pygame.font.SysFont("arial", 18).render(f"{ethan.name}: {int(ethan.health_bar_display)}/{ethan.max_health}", True, (255, 255, 255)), (575, 0))
+    pygame.draw.rect(screen, (0, 255, 0) if eathan.health_bar_display > 72 else (255, 255, 0) if eathan.health_bar_display > 36 else (255, 0, 0),
+                     (570, 20, int(200 * (eathan.health_bar_display / eathan.max_health)), 18))
+    screen.blit(pygame.font.SysFont("arial", 18).render(f"{eathan.name}: {int(eathan.health_bar_display)}/{eathan.max_health}", True, (255, 255, 255)), (575, 0))
 
     if turn == "player":
         pygame.draw.rect(screen, (0, 200, 0), (70, 290, 160, 30))
         screen.blit(pygame.font.SysFont("arial", 20).render("Your Turn", True, (255, 255, 255)), (90, 295))
     elif turn == "waiting":
         pygame.draw.rect(screen, (200, 0, 0), (520, 290, 180, 30))
-        screen.blit(pygame.font.SysFont("arial", 20).render("Ethan is deciding...", True, (255, 255, 255)), (530, 295))
+        screen.blit(pygame.font.SysFont("arial", 20).render("Eathan is deciding...", True, (255, 255, 255)), (530, 295))
 
     if turn == "player":
         pygame.draw.rect(screen, (30, 30, 30), (270, 20, 260, 210))
