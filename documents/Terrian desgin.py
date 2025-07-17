@@ -227,9 +227,6 @@ def run_boss_level(screen, clock, sounds, eathan, player, bg_img, turn, eathan_i
             if player.health > 0:
                 render = pygame.font.SysFont("arial", 50).render("You Win", True, (255, 255, 255))
                 screen.blit(render, (screen.get_width() / 2 - render.get_width() / 2, 160))
-            else:
-                render = pygame.font.SysFont("arial", 50).render("You Lose", True, (255, 255, 255))
-                screen.blit(render, (screen.get_width() / 2 - render.get_width() / 2, 160))
 
 
 
