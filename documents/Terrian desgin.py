@@ -9,7 +9,7 @@ import antonio
 def main():
     pygame.init()
     SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 512
+    SCREEN_HEIGHT = 600
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("The Funished")
     pressed_keys=pygame.key.get_pressed()
